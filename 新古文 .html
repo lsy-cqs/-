@@ -1,0 +1,1621 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>古文背诵助手 - 完整优化版</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* 颜色变量定义 */
+        :root {
+            --primary-color: #7e57c2;
+            --secondary-color: #9575cd;
+            --light-color: #f5f5f5;
+            --dark-color: #37474f;
+            --success-color: #43a047;
+            --warning-color: #ffb300;
+            --danger-color: #e53935;
+            --info-color: #29b6f6;
+            --background-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-primary: #263238;
+            --text-secondary: #546e7a;
+            --border-color: #e0e0e0;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+
+        /* 基础样式重置 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Serif SC', serif, 'Microsoft YaHei', sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding-bottom: 60px;
+        }
+
+        /* 布局容器 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* 顶部标题区域 */
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 2.5rem 0;
+            text-align: center;
+            border-radius: 0 0 24px 24px;
+            box-shadow: var(--shadow);
+            margin-bottom: 2.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            transform: rotate(30deg);
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            font-weight: 400;
+            position: relative;
+        }
+
+        /* 主内容区域布局 */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+        }
+
+        /* 侧边栏样式 */
+        .sidebar {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1.75rem;
+            box-shadow: var(--shadow);
+            position: relative;
+            height: fit-content;
+        }
+
+        /* 主内容区域样式 */
+        .content {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2.25rem;
+            box-shadow: var(--shadow);
+            min-height: 600px;
+        }
+
+        /* 标题样式 */
+        h2 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--border-color);
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        h2 i {
+            margin-right: 10px;
+        }
+
+        /* 表单组样式 */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: var(--transition);
+            background: var(--light-color);
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(126, 87, 194, 0.15);
+        }
+
+        textarea {
+            min-height: 160px;
+            resize: vertical;
+            line-height: 1.8;
+        }
+
+        /* 按钮样式 */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--primary-color);
+            color: white;
+            padding: 14px 26px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: var(--transition);
+            text-align: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            background: var(--secondary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-block {
+            display: flex;
+            width: 100%;
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+
+        .btn-success {
+            background: var(--success-color);
+        }
+
+        .btn-warning {
+            background: var(--warning-color);
+        }
+
+        .btn-danger {
+            background: var(--danger-color);
+        }
+
+        .btn-info {
+            background: var(--info-color);
+        }
+
+        /* 文章列表样式 */
+        .article-list {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 12px;
+        }
+
+        .article-item {
+            padding: 16px;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        .article-item:hover {
+            background: rgba(126, 87, 194, 0.05);
+        }
+
+        .article-item.active {
+            background: rgba(126, 87, 194, 0.1);
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .article-content {
+            flex: 1;
+        }
+
+        .article-title {
+            font-weight: bold;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            color: var(--text-primary);
+        }
+
+        .article-author {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+        }
+
+        .article-preview {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* 进度圆圈样式 */
+        .progress-circle {
+            position: relative;
+            width: 44px;
+            height: 44px;
+        }
+
+        .progress-circle svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+
+        .progress-circle circle {
+            fill: none;
+            stroke-width: 4;
+            stroke-linecap: round;
+        }
+
+        .progress-circle .bg {
+            stroke: #f0f0f0;
+        }
+
+        .progress-circle .progress {
+            stroke: var(--primary-color);
+            stroke-dasharray: 100;
+            transition: stroke-dashoffset 0.5s;
+        }
+
+        .progress-value {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        /* 背诵区域样式 */
+        .recite-area {
+            background: linear-gradient(135deg, #f9f5ff 0%, #f0ebff 100%);
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin-bottom: 1.75rem;
+            min-height: 320px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            border: 1px solid rgba(126, 87, 194, 0.1);
+        }
+
+        .welcome-message {
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        .welcome-message h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .welcome-message p {
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .recite-text {
+            font-size: 1.35rem;
+            line-height: 2.1;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        /* 控制按钮区域 */
+        .recite-controls {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 1.25rem;
+            flex-wrap: wrap;
+        }
+
+        /* 进度条样式 */
+        .progress-container {
+            margin-top: 1.75rem;
+            background: var(--light-color);
+            padding: 1.25rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .progress-bar {
+            height: 12px;
+            background: #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 0.75rem;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            width: 0%;
+            transition: width 0.5s;
+            border-radius: 8px;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+
+        /* 辅助类 */
+        .hidden {
+            display: none;
+        }
+
+        /* 模式选择器 */
+        .mode-selector {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 1.75rem;
+            flex-wrap: wrap;
+        }
+
+        .mode-btn {
+            flex: 1;
+            min-width: 130px;
+            padding: 12px;
+        }
+
+        .mode-btn.active {
+            background: var(--secondary-color);
+            box-shadow: 0 0 0 2px white, 0 0 0 4px var(--primary-color);
+        }
+
+        /* 填空样式 */
+        .blank {
+            display: inline-block;
+            min-width: 60px;
+            border-bottom: 2px solid var(--primary-color);
+            margin: 0 6px;
+            text-align: center;
+            color: transparent;
+            text-shadow: 0 0 5px rgba(0,0,0,0.1);
+            position: relative;
+            border-radius: 2px;
+        }
+
+        .blank::after {
+            content: "?";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #b0b0b0;
+            font-size: 0.8em;
+        }
+
+        .blank.revealed {
+            color: inherit;
+            text-shadow: none;
+            border-bottom-color: var(--success-color);
+            background: rgba(67, 160, 71, 0.05);
+        }
+
+        .blank.revealed::after {
+            display: none;
+        }
+
+        /* 导入区域样式 */
+        .import-section {
+            margin-top: 2rem;
+            padding-top: 1.75rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* 通知样式 */
+        .notification {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            padding: 16px 22px;
+            background: var(--success-color);
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+            transform: translateX(120%);
+            transition: transform 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            max-width: 320px;
+        }
+
+        .notification.error {
+            background: var(--danger-color);
+        }
+
+        .notification.warning {
+            background: var(--warning-color);
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        /* 空状态样式 */
+        .empty-state {
+            text-align: center;
+            padding: 2.5rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 3.5rem;
+            margin-bottom: 1.25rem;
+            color: #d0d0d0;
+        }
+
+        /* 统计卡片样式 */
+        .stats-container {
+            display: flex;
+            justify-content: space-around;
+            margin: 1.75rem 0;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: 14px;
+            padding: 1.75rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+            flex: 1;
+            min-width: 160px;
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-value {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* 备份提示样式 */
+        .backup-notice {
+            background: #fff4e5;
+            border-left: 4px solid var(--warning-color);
+            padding: 1.25rem;
+            margin: 1.75rem 0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* 提示文本样式 */
+        .hint-text {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+            font-style: italic;
+        }
+
+        /* 设置面板样式 */
+        .settings-panel {
+            background: var(--light-color);
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin-top: 1.75rem;
+        }
+
+        .settings-title {
+            font-size: 1.1rem;
+            margin-bottom: 1.25rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .settings-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+        }
+
+        /* 开关按钮样式 */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 26px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+
+        /* 导入指南样式 */
+        .import-guide {
+            background: #e6f7ff;
+            border-left: 4px solid var(--info-color);
+            padding: 1.25rem;
+            margin: 1.25rem 0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+
+        .import-guide h4 {
+            margin-top: 0;
+            color: var(--info-color);
+            margin-bottom: 0.75rem;
+        }
+
+        .import-guide pre {
+            background: #333;
+            color: white;
+            padding: 12px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 0.85rem;
+            margin-top: 0.75rem;
+        }
+
+        /* 浮动帮助按钮 */
+        .floating-help {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 56px;
+            height: 56px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+            cursor: pointer;
+            z-index: 1000;
+            transition: var(--transition);
+        }
+
+        .floating-help:hover {
+            transform: scale(1.1);
+            background: var(--secondary-color);
+        }
+
+        /* 历史记录区域 */
+        .history-section {
+            margin-top: 1.75rem;
+            border-top: 1px solid var(--border-color);
+            padding-top: 1.75rem;
+        }
+
+        .history-item {
+            padding: 14px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.95rem;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            transition: var(--transition);
+        }
+
+        .history-item:hover {
+            background: var(--light-color);
+        }
+
+        .history-date {
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 4px;
+        }
+
+        .history-duration {
+            color: var(--text-secondary);
+        }
+
+        /* 句子输入框样式 */
+        .sentence-input {
+            width: 100%;
+            padding: 14px;
+            font-size: 1.15rem;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            margin-bottom: 1.25rem;
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .sentence-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(126, 87, 194, 0.15);
+        }
+
+        .sentence-input.correct {
+            border-color: var(--success-color);
+            background-color: rgba(67, 160, 71, 0.08);
+        }
+
+        .sentence-input.incorrect {
+            border-color: var(--danger-color);
+            background-color: rgba(229, 57, 53, 0.08);
+        }
+
+        /* 模式描述文本 */
+        .mode-description {
+            text-align: center;
+            margin-top: 0.75rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 968px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .recite-controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                margin-bottom: 12px;
+            }
+            
+            .mode-selector {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .container {
+                padding: 16px;
+            }
+            
+            header {
+                padding: 2rem 0;
+                border-radius: 0;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .sidebar, .content {
+                padding: 1.5rem;
+            }
+            
+            .recite-area {
+                padding: 1.75rem;
+            }
+            
+            .recite-text {
+                font-size: 1.15rem;
+            }
+            
+            .stats-container {
+                flex-direction: column;
+            }
+            
+            .stat-card {
+                width: 100%;
+            }
+        }
+
+        /* 动画效果 */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* 文章标题图标 */
+        .article-title i {
+            margin-right: 8px;
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1><i class="fas fa-book"></i> 古文背诵助手</h1>
+            <p class="subtitle">已预加载《岳阳楼记》《醉翁亭记》《春江花月夜》</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="main-content">
+            <div class="sidebar">
+                <h2><i class="fas fa-list"></i> 古文列表</h2>
+                <div class="form-group">
+                    <input type="text" id="search-articles" placeholder="搜索古文...">
+                </div>
+                <div class="article-list" id="article-list">
+                    <!-- 古文列表将通过JS动态生成 -->
+                </div>
+                
+                <div class="form-group">
+                    <button class="btn btn-block" id="add-article-btn">
+                        <i class="fas fa-plus"></i> 添加新古文
+                    </button>
+                </div>
+                
+                <div class="backup-notice">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <div>定期导出备份以防数据丢失</div>
+                </div>
+                
+                <div class="import-section">
+                    <h2><i class="fas fa-file-import"></i> 批量导入</h2>
+                    
+                    <div class="import-guide">
+                        <h4>JSON格式示例：</h4>
+                        <pre>[
+  {
+    "title": "古文标题",
+    "author": "作者",
+    "content": "古文内容..."
+  }
+]</pre>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="import-file">选择文件 (JSON格式)</label>
+                        <input type="file" id="import-file" accept=".json">
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-block btn-secondary" id="import-btn">
+                            <i class="fas fa-file-import"></i> 导入古文
+                        </button>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-block btn-secondary" id="export-btn">
+                            <i class="fas fa-file-export"></i> 导出所有古文
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="history-section">
+                    <h2><i class="fas fa-history"></i> 背诵历史</h2>
+                    <div id="history-list">
+                        <!-- 历史记录将通过JS动态生成 -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="content">
+                <div id="add-article-form" class="hidden">
+                    <h2><i class="fas fa-plus-circle"></i> 添加新古文</h2>
+                    <div class="form-group">
+                        <label for="article-title">标题</label>
+                        <input type="text" id="article-title" placeholder="例如：岳阳楼记">
+                    </div>
+                    <div class="form-group">
+                        <label for="article-author">作者</label>
+                        <input type="text" id="article-author" placeholder="例如：范仲淹">
+                    </div>
+                    <div class="form-group">
+                        <label for="article-content">内容</label>
+                        <textarea id="article-content" placeholder="请输入古文内容..."></textarea>
+                    </div>
+                    <div class="form-group" style="display: flex; gap: 12px;">
+                        <button class="btn btn-success" id="save-article-btn">
+                            <i class="fas fa-save"></i> 保存古文
+                        </button>
+                        <button class="btn btn-secondary" id="cancel-add-btn">取消</button>
+                    </div>
+                </div>
+                
+                <div id="recite-section">
+                    <h2 id="current-article-title"><i class="fas fa-book-reader"></i> 选择一篇古文开始背诵</h2>
+                    
+                    <div class="mode-selector">
+                        <button class="btn mode-btn" data-mode="full">
+                            <i class="fas fa-align-left"></i> 全文模式
+                        </button>
+                        <button class="btn mode-btn" data-mode="sentence">
+                            <i class="fas fa-grip-lines"></i>
+<i class="fas fa-grip-lines"></i> 逐句模式
+                        </button>
+                        <button class="btn mode-btn" data-mode="blank">
+                            <i class="fas fa-tasks"></i> 填空模式
+                        </button>
+                    </div>
+                    <p class="mode-description" id="mode-description">选择一种背诵模式开始学习</p>
+                    
+                    <div class="recite-area">
+                        <div class="recite-text" id="recite-text">
+                            请从左侧选择一篇古文开始背诵
+                        </div>
+                        <input type="text" class="sentence-input hidden" id="sentence-input" placeholder="请输入当前句子...">
+                    </div>
+                    
+                    <div class="recite-controls">
+                        <button class="btn" id="prev-btn">
+                            <i class="fas fa-arrow-left"></i> 上一句
+                        </button>
+                        <button class="btn btn-success" id="check-btn">
+                            <i class="fas fa-check"></i> 检查
+                        </button>
+                        <button class="btn" id="next-btn">
+                            下一句 <i class="fas fa-arrow-right"></i>
+                        </button>
+                        <button class="btn btn-warning" id="reset-btn">
+                            <i class="fas fa-redo"></i> 重置进度
+                        </button>
+                    </div>
+                    
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress" id="progress-bar"></div>
+                        </div>
+                        <div class="progress-info">
+                            <span>背诵进度</span>
+                            <span id="progress-text">0%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span>操作成功！</span>
+    </div>
+    
+    <div class="floating-help" id="floating-help">
+        <i class="fas fa-question"></i>
+    </div>
+    
+    <script>
+        // 古文数据存储，包含三篇古文
+        let articles = JSON.parse(localStorage.getItem('articles')) || [
+            {
+                id: 1,
+                title: "岳阳楼记",
+                author: "范仲淹",
+                content: "庆历四年春，滕子京谪守巴陵郡。越明年，政通人和，百废具兴。乃重修岳阳楼，增其旧制，刻唐贤今人诗赋于其上。属予作文以记之。\n\n予观夫巴陵胜状，在洞庭一湖。衔远山，吞长江，浩浩汤汤，横无际涯；朝晖夕阴，气象万千。此则岳阳楼之大观也，前人之述备矣。然则北通巫峡，南极潇湘，迁客骚人，多会于此，览物之情，得无异乎？\n\n若夫霪雨霏霏，连月不开，阴风怒号，浊浪排空；日星隐曜，山岳潜形；商旅不行，樯倾楫摧；薄暮冥冥，虎啸猿啼。登斯楼也，则有去国怀乡，忧谗畏讥，满目萧然，感极而悲者矣。\n\n至若春和景明，波澜不惊，上下天光，一碧万顷；沙鸥翔集，锦鳞游泳；岸芷汀兰，郁郁青青。而或长烟一空，皓月千里，浮光跃金，静影沉璧，渔歌互答，此乐何极！登斯楼也，则有心旷神怡，宠辱偕忘，把酒临风，其喜洋洋者矣。\n\n嗟夫！予尝求古仁人之心，或异二者之为，何哉？不以物喜，不以己悲；居庙堂之高则忧其民；处江湖之远则忧其君。是进亦忧，退亦忧。然则何时而乐耶？其必曰：先天下之忧而忧，后天下之乐而乐乎。噫！微斯人，吾谁与归？",
+                progress: 0,
+                createdAt: new Date().toISOString(),
+                lastPracticed: null,
+                sentences: [],
+                currentSentenceIndex: 0
+            },
+            {
+                id: 2,
+                title: "醉翁亭记",
+                author: "欧阳修",
+                content: "环滁皆山也。其西南诸峰，林壑尤美，望之蔚然而深秀者，琅琊也。山行六七里，渐闻水声潺潺而泻出于两峰之间者，酿泉也。峰回路转，有亭翼然临于泉上者，醉翁亭也。作亭者谁？山之僧智仙也。名之者谁？太守自谓也。太守与客来饮于此，饮少辄醉，而年又最高，故自号曰醉翁也。醉翁之意不在酒，在乎山水之间也。山水之乐，得之心而寓之酒也。\n\n若夫日出而林霏开，云归而岩穴暝，晦明变化者，山间之朝暮也。野芳发而幽香，佳木秀而繁阴，风霜高洁，水落而石出者，山间之四时也。朝而往，暮而归，四时之景不同，而乐亦无穷也。\n\n至于负者歌于途，行者休于树，前者呼，后者应，伛偻提携，往来而不绝者，滁人游也。临溪而渔，溪深而鱼肥。酿泉为酒，泉香而酒洌；山肴野蔌，杂然而前陈者，太守宴也。宴酣之乐，非丝非竹，射者中，弈者胜，觥筹交错，起坐而喧哗者，众宾欢也。苍颜白发，颓然乎其间者，太守醉也。\n\n已而夕阳在山，人影散乱，太守归而宾客从也。树林阴翳，鸣声上下，游人去而禽鸟乐也。然而禽鸟知山林之乐，而不知人之乐；人知从太守游而乐，而不知太守之乐其乐也。醉能同其乐，醒能述以文者，太守也。太守谓谁？庐陵欧阳修也。",
+                progress: 0,
+                createdAt: new Date().toISOString(),
+                lastPracticed: null,
+                sentences: [],
+                currentSentenceIndex: 0
+            },
+            {
+                id: 3,
+                title: "春江花月夜",
+                author: "张若虚",
+                content: "春江潮水连海平，海上明月共潮生。\n滟滟随波千万里，何处春江无月明！\n江流宛转绕芳甸，月照花林皆似霰。\n空里流霜不觉飞，汀上白沙看不见。\n江天一色无纤尘，皎皎空中孤月轮。\n江畔何人初见月？江月何年初照人？\n人生代代无穷已，江月年年望相似。\n不知江月待何人，但见长江送流水。\n白云一片去悠悠，青枫浦上不胜愁。\n谁家今夜扁舟子？何处相思明月楼？\n可怜楼上月徘徊，应照离人妆镜台。\n玉户帘中卷不去，捣衣砧上拂还来。\n此时相望不相闻，愿逐月华流照君。\n鸿雁长飞光不度，鱼龙潜跃水成文。\n昨夜闲潭梦落花，可怜春半不还家。\n江水流春去欲尽，江潭落月复西斜。\n斜月沉沉藏海雾，碣石潇湘无限路。\n不知乘月几人归，落月摇情满江树。",
+                progress: 0,
+                createdAt: new Date().toISOString(),
+                lastPracticed: null,
+                sentences: [],
+                currentSentenceIndex: 0
+            }
+        ];
+
+        // 当前选中的文章
+        let currentArticle = null;
+        let currentMode = 'full'; // 默认全文模式
+        let practiceHistory = JSON.parse(localStorage.getItem('practiceHistory')) || [];
+        
+        // DOM 加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initApp();
+        });
+        
+        // 初始化应用
+        function initApp() {
+            // 预处理句子分割
+            processAllSentences();
+            renderArticles();
+            renderHistory();
+            setupEventListeners();
+        }
+        
+        // 预处理所有文章的句子
+        function processAllSentences() {
+            articles.forEach(article => {
+                if (!article.sentences || article.sentences.length === 0) {
+                    article.sentences = splitIntoSentences(article.content);
+                    article.currentSentenceIndex = 0;
+                }
+            });
+            saveArticles();
+        }
+        
+        // 将文章内容分割成句子
+        function splitIntoSentences(content) {
+            // 使用正则表达式分割句子，考虑中文标点
+            return content.split(/(?<=[。！？；.!?;])/g)
+                .filter(sentence => sentence.trim().length > 0)
+                .map(sentence => sentence.trim());
+        }
+        
+        // 渲染文章列表
+        function renderArticles() {
+            const articleList = document.getElementById('article-list');
+            
+            // 清空当前列表
+            articleList.innerHTML = '';
+            
+            if (articles.length === 0) {
+                articleList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-book-open"></i>
+                        <p>暂无古文，请添加</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // 创建文章列表项
+            articles.forEach(article => {
+                const articleItem = document.createElement('div');
+                articleItem.className = 'article-item';
+                articleItem.dataset.id = article.id;
+                
+                // 创建进度圆环
+                const progressSvg = `
+                    <svg viewBox="0 0 36 36">
+                        <circle class="bg" cx="18" cy="18" r="15.9" />
+                        <circle class="progress" cx="18" cy="18" r="15.9" 
+                                stroke-dashoffset="${100 - article.progress}" />
+                    </svg>
+                    <div class="progress-value">${article.progress}%</div>
+                `;
+                
+                articleItem.innerHTML = `
+                    <div class="article-content">
+                        <div class="article-title">
+                            <i class="fas fa-book"></i> ${article.title}
+                        </div>
+                        <div class="article-author">${article.author}</div>
+                        <div class="article-preview">${article.content.substring(0, 30)}...</div>
+                    </div>
+                    <div class="progress-circle">
+                        ${progressSvg}
+                    </div>
+                `;
+                
+                // 添加点击事件
+                articleItem.addEventListener('click', () => selectArticle(article.id));
+                
+                // 添加到列表
+                articleList.appendChild(articleItem);
+            });
+        }
+        
+        // 选择文章
+        function selectArticle(id) {
+            // 移除之前的选中状态
+            document.querySelectorAll('.article-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // 设置新的选中状态
+            const selectedItem = document.querySelector(`.article-item[data-id="${id}"]`);
+            if (selectedItem) {
+                selectedItem.classList.add('active');
+            }
+            
+            // 设置当前文章
+            currentArticle = articles.find(article => article.id === id);
+            
+            // 更新UI
+            document.getElementById('current-article-title').textContent = currentArticle.title;
+            
+            // 根据当前模式显示内容
+            updateDisplayByMode();
+            
+            // 更新进度
+            updateProgress();
+        }
+        
+        // 根据当前模式更新显示
+        function updateDisplayByMode() {
+            const reciteText = document.getElementById('recite-text');
+            const sentenceInput = document.getElementById('sentence-input');
+            const modeDescription = document.getElementById('mode-description');
+            
+            // 重置输入框状态
+            sentenceInput.className = 'sentence-input hidden';
+            sentenceInput.value = '';
+            
+            switch(currentMode) {
+                case 'full':
+                    reciteText.innerHTML = currentArticle.content.replace(/\n/g, '<br>');
+                    modeDescription.textContent = '显示完整文章内容，适合通读和整体记忆';
+                    break;
+                case 'sentence':
+                    if (currentArticle.sentences.length > 0) {
+                        reciteText.textContent = currentArticle.sentences[currentArticle.currentSentenceIndex];
+                        sentenceInput.classList.remove('hidden');
+                        modeDescription.textContent = '逐句背诵模式，输入当前句子进行检查';
+                    }
+                    break;
+                case 'blank':
+                    reciteText.innerHTML = createBlankText(currentArticle.content);
+                    modeDescription.textContent = '填空模式，点击空白处显示答案，测试记忆效果';
+                    break;
+            }
+        }
+        
+        // 创建填空文本
+        function createBlankText(content) {
+            // 随机选择一些词替换为填空
+            const words = content.split(/([，。！？；\s])/).filter(word => word.trim().length > 0);
+            const blankCount = Math.min(5, Math.floor(words.length / 5));
+            
+            // 选择要替换的词（跳过标点符号）
+            const contentWords = words.filter(word => !/[，。！？；\s]/.test(word));
+            const indices = new Set();
+            
+            while (indices.size < blankCount) {
+                const randomIndex = Math.floor(Math.random() * contentWords.length);
+                if (contentWords[randomIndex].length > 1) { // 只替换长度大于1的词
+                    indices.add(randomIndex);
+                }
+            }
+            
+            // 构建带有填空的文本
+            let blankIndex = 0;
+            return words.map(word => {
+                if (indices.has(blankIndex)) {
+                    return `<span class="blank" data-answer="${word}">${word}</span>`;
+                }
+                if (!/[，。！？；\s]/.test(word)) {
+                    blankIndex++;
+                }
+                return word;
+            }).join('');
+        }
+        
+        // 更新进度显示
+        function updateProgress() {
+            if (!currentArticle) return;
+            
+            document.getElementById('progress-bar').style.width = `${currentArticle.progress}%`;
+            document.getElementById('progress-text').textContent = `${currentArticle.progress}%`;
+            
+            // 更新文章列表中的进度显示
+            const articleItem = document.querySelector(`.article-item[data-id="${currentArticle.id}"]`);
+            if (articleItem) {
+                const progressValue = articleItem.querySelector('.progress-value');
+                const progressCircle = articleItem.querySelector('.progress');
+                
+                if (progressValue) progressValue.textContent = `${currentArticle.progress}%`;
+                if (progressCircle) progressCircle.style.strokeDashoffset = 100 - currentArticle.progress;
+            }
+        }
+        
+        // 设置事件监听器
+        function setupEventListeners() {
+            // 添加文章按钮
+            document.getElementById('add-article-btn').addEventListener('click', showAddForm);
+            
+            // 取消添加按钮
+            document.getElementById('cancel-add-btn').addEventListener('click', hideAddForm);
+            
+            // 保存文章按钮
+            document.getElementById('save-article-btn').addEventListener('click', saveArticle);
+            
+            // 搜索功能
+            document.getElementById('search-articles').addEventListener('input', function(e) {
+                const searchTerm = e.target.value.toLowerCase();
+                
+                document.querySelectorAll('.article-item').forEach(item => {
+                    const title = item.querySelector('.article-title').textContent.toLowerCase();
+                    const author = item.querySelector('.article-author').textContent.toLowerCase();
+                    
+                    if (title.includes(searchTerm) || author.includes(searchTerm)) {
+                        item.style.display = 'flex';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+            
+            // 导入按钮
+            document.getElementById('import-btn').addEventListener('click', importArticles);
+            
+            // 导出按钮
+            document.getElementById('export-btn').addEventListener('click', exportArticles);
+            
+            // 模式选择按钮
+            document.querySelectorAll('.mode-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // 更新活动按钮样式
+                    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // 更新当前模式
+                    currentMode = this.dataset.mode;
+                    
+                    // 更新显示
+                    if (currentArticle) {
+                        updateDisplayByMode();
+                    }
+                });
+            });
+            
+            // 控制按钮
+            document.getElementById('prev-btn').addEventListener('click', prevSentence);
+            document.getElementById('next-btn').addEventListener('click', nextSentence);
+            document.getElementById('check-btn').addEventListener('click', checkAnswer);
+            document.getElementById('reset-btn').addEventListener('click', resetProgress);
+            
+            // 句子输入框回车键检测
+            document.getElementById('sentence-input').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    checkAnswer();
+                }
+            });
+            
+            // 填空点击显示答案
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('blank')) {
+                    e.target.classList.add('revealed');
+                    e.target.textContent = e.target.dataset.answer;
+                }
+            });
+            
+            // 帮助按钮
+            document.getElementById('floating-help').addEventListener('click', showHelp);
+        }
+        
+        // 显示添加表单
+        function showAddForm() {
+            document.getElementById('add-article-form').classList.remove('hidden');
+            document.getElementById('recite-section').classList.add('hidden');
+        }
+        
+        // 隐藏添加表单
+        function hideAddForm() {
+            document.getElementById('add-article-form').classList.add('hidden');
+            document.getElementById('recite-section').classList.remove('hidden');
+            
+            // 清空表单
+            document.getElementById('article-title').value = '';
+            document.getElementById('article-author').value = '';
+            document.getElementById('article-content').value = '';
+        }
+        
+        // 保存文章
+        function saveArticle() {
+            const title = document.getElementById('article-title').value.trim();
+            const author = document.getElementById('article-author').value.trim();
+            const content = document.getElementById('article-content').value.trim();
+            
+            if (!title || !author || !content) {
+                showNotification('请填写完整信息', 'error');
+                return;
+            }
+            
+            // 创建新文章
+            const newArticle = {
+                id: articles.length > 0 ? Math.max(...articles.map(a => a.id)) + 1 : 1,
+                title,
+                author,
+                content,
+                progress: 0,
+                createdAt: new Date().toISOString(),
+                lastPracticed: null,
+                sentences: splitIntoSentences(content),
+                currentSentenceIndex: 0
+            };
+            
+            // 添加到文章列表
+            articles.push(newArticle);
+            
+            // 保存到本地存储
+            saveArticles();
+            
+            // 重新渲染列表
+            renderArticles();
+            
+            // 隐藏表单
+            hideAddForm();
+            
+            // 显示成功通知
+            showNotification('古文添加成功');
+        }
+        
+        // 保存文章到本地存储
+        function saveArticles() {
+            localStorage.setItem('articles', JSON.stringify(articles));
+        }
+        
+        // 保存历史记录到本地存储
+        function saveHistory() {
+            localStorage.setItem('practiceHistory', JSON.stringify(practiceHistory));
+        }
+        
+        // 导入文章
+        function importArticles() {
+            const fileInput = document.getElementById('import-file');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                showNotification('请选择文件', 'error');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedArticles = JSON.parse(e.target.result);
+                    
+                    if (!Array.isArray(importedArticles)) {
+                        showNotification('文件格式不正确', 'error');
+                        return;
+                    }
+                    
+                    // 合并文章
+                    articles = [...articles, ...importedArticles.map(article => ({
+                        ...article,
+                        id: articles.length > 0 ? Math.max(...articles.map(a => a.id)) + 1 : 1,
+                        progress: article.progress || 0,
+                        createdAt: article.createdAt || new Date().toISOString(),
+                        lastPracticed: article.lastPracticed || null,
+                        sentences: splitIntoSentences(article.content),
+                        currentSentenceIndex: 0
+                    }))];
+                    
+                    // 保存到本地存储
+                    saveArticles();
+                    
+                    // 重新渲染列表
+                    renderArticles();
+                    
+                    // 清空文件输入
+                    fileInput.value = '';
+                    
+                    // 显示成功通知
+                    showNotification(`成功导入 ${importedArticles.length} 篇古文`);
+                } catch (error) {
+                    showNotification('文件解析失败', 'error');
+                    console.error(error);
+                }
+            };
+            reader.readAsText(file);
+        }
+        
+        // 导出文章
+        function exportArticles() {
+            const dataStr = JSON.stringify(articles, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = '古文背诵助手备份.json';
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+            
+            showNotification('导出成功');
+        }
+        
+        // 上一句
+        function prevSentence() {
+            if (!currentArticle || currentMode !== 'sentence') return;
+            
+            if (currentArticle.currentSentenceIndex > 0) {
+                currentArticle.currentSentenceIndex--;
+                updateDisplayByMode();
+            }
+        }
+        
+        // 下一句
+        function nextSentence() {
+            if (!currentArticle || currentMode !== 'sentence') return;
+            
+            if (currentArticle.currentSentenceIndex < currentArticle.sentences.length - 1) {
+                currentArticle.currentSentenceIndex++;
+                updateDisplayByMode();
+                
+                // 清空输入框
+                const sentenceInput = document.getElementById('sentence-input');
+                sentenceInput.value = '';
+                sentenceInput.className = 'sentence-input';
+            } else {
+                // 已完成所有句子
+                showNotification('恭喜！您已完成本篇古文的背诵');
+                
+                // 更新进度
+                currentArticle.progress = 100;
+                currentArticle.lastPracticed = new Date().toISOString();
+                
+                // 添加历史记录
+                practiceHistory.unshift({
+                    articleId: currentArticle.id,
+                    articleTitle: currentArticle.title,
+                    date: new Date().toISOString(),
+                    duration: '15分钟' // 这里可以添加计时功能
+                });
+                
+                // 保存数据
+                saveArticles();
+                saveHistory();
+                
+                // 更新UI
+                updateProgress();
+                renderHistory();
+            }
+        }
+        
+        // 检查答案
+        function checkAnswer() {
+            if (!currentArticle) return;
+            
+            switch(currentMode) {
+                case 'sentence':
+                    checkSentence();
+                    break;
+                case 'blank':
+                    checkBlanks();
+                    break;
+                default:
+                    showNotification('当前模式不支持检查功能', 'warning');
+            }
+        }
+        
+        // 检查句子模式下的答案
+        function checkSentence() {
+            const input = document.getElementById('sentence-input');
+            const correctAnswer = currentArticle.sentences[currentArticle.currentSentenceIndex];
+            
+            if (input.value.trim() === correctAnswer) {
+                input.className = 'sentence-input correct';
+                setTimeout(() => {
+                    nextSentence();
+                }, 800);
+            } else {
+                input.className = 'sentence-input incorrect';
+                showNotification('答案不正确，请再试一次', 'error');
+            }
+        }
+        
+        // 检查填空模式下的答案
+        function checkBlanks() {
+            const blanks = document.querySelectorAll('.blank:not(.revealed)');
+            
+            if (blanks.length === 0) {
+                showNotification('恭喜！您已完成所有填空');
+                
+                // 更新进度
+                currentArticle.progress = Math.min(100, currentArticle.progress + 20);
+                currentArticle.lastPracticed = new Date().toISOString();
+                
+                // 添加历史记录
+                practiceHistory.unshift({
+                    articleId: currentArticle.id,
+                    articleTitle: currentArticle.title,
+                    date: new Date().toISOString(),
+                    duration: '10分钟'
+                });
+                
+                // 保存数据
+                saveArticles();
+                saveHistory();
+                
+                // 更新UI
+                updateProgress();
+                renderHistory();
+            } else {
+                showNotification(`还有 ${blanks.length} 个填空未完成`, 'warning');
+            }
+        }
+        
+        // 重置进度
+        function resetProgress() {
+            if (!currentArticle) return;
+            
+            if (confirm('确定要重置当前古文的背诵进度吗？')) {
+                currentArticle.progress = 0;
+                currentArticle.currentSentenceIndex = 0;
+                
+                // 保存数据
+                saveArticles();
+                
+                // 更新UI
+                updateDisplayByMode();
+                updateProgress();
+                
+                showNotification('进度已重置');
+            }
+        }
+        
+        // 渲染历史记录
+        function renderHistory() {
+            const historyList = document.getElementById('history-list');
+            
+            if (practiceHistory.length === 0) {
+                historyList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-history"></i>
+                        <p>暂无背诵记录</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            historyList.innerHTML = '';
+            practiceHistory.slice(0, 5).forEach(record => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                
+                const date = new Date(record.date);
+                const dateStr = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+                
+                historyItem.innerHTML = `
+                    <div class="history-date">${record.articleTitle}</div>
+                    <div>${dateStr} · ${record.duration}</div>
+                `;
+                
+                historyList.appendChild(historyItem);
+            });
+        }
+        
+        // 显示帮助
+        function showHelp() {
+            alert('古文背诵助手使用说明：\n\n1. 从左侧选择要背诵的古文\n2. 选择背诵模式：全文模式、逐句模式或填空模式\n3. 使用控制按钮进行背诵操作\n4. 可以添加自定义古文或导入导出数据\n\n提示：定期导出备份数据以防丢失！');
+        }
+        
+        // 显示通知
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            
+            // 设置消息和类型
+            notification.querySelector('span').textContent = message;
+            notification.className = 'notification';
+            
+            if (type === 'error') {
+                notification.classList.add('error');
+                notification.querySelector('i').className = 'fas fa-exclamation-circle';
+            } else if (type === 'warning') {
+                notification.classList.add('warning');
+                notification.querySelector('i').className = 'fas fa-exclamation-triangle';
+            } else {
+                notification.querySelector('i').className = 'fas fa-check-circle';
+            }
+            
+            // 显示通知
+            notification.classList.add('show');
+            
+            // 3秒后隐藏
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
